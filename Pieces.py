@@ -55,8 +55,7 @@ class Piece:
 
         return False  # If not horizontal or vertical, path is not straight
 
-
-def move(self, start_pos, end_pos, board):
+    def move(self, start_pos, end_pos, board):
         # Placeholder method, to be overridden by specific piece classes
         pass
 
