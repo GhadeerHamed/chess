@@ -131,7 +131,7 @@ class Rook(Piece):
 
         # Rook moves horizontally or vertically
         return (start_row == end_row or start_col == end_col) \
-               and self._check_path_clear(start_pos, end_pos, board)
+            and self._check_path_clear(start_pos, end_pos, board)
 
     def _check_path_clear(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
@@ -171,7 +171,7 @@ class Queen(Piece):
         # Queen moves like a Rook or Bishop - horizontally, vertically, or diagonally
         return (start_row == end_row or start_col == end_col or
                 abs(end_row - start_row) == abs(end_col - start_col)) \
-               and self._check_path_clear(start_pos, end_pos, board)
+            and self._check_path_clear(start_pos, end_pos, board)
 
     def _check_path_clear(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
