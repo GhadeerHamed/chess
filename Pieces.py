@@ -36,7 +36,7 @@ class Piece:
         start_row, start_col = start_pos
         end_row, end_col = end_pos
 
-        if start_col == end_col:
+        if start_col == end_col:  # Check vertical path
             direction_row = 1 if end_row > start_row else -1
 
             check_row = start_row + direction_row
@@ -44,10 +44,19 @@ class Piece:
                 if not isinstance(board[check_row][start_col], EmptyPiece):
                     return False
                 check_row += direction_row
+        elif start_row == end_row:  # Check horizontal path
+            direction_col = 1 if end_col > start_col else -1
 
-        return True
+            check_col = start_col + direction_col
+            while check_col != end_col:
+                if not isinstance(board[start_row][check_col], EmptyPiece):
+                    return False
+                check_col += direction_col
 
-    def move(self, start_pos, end_pos, board):
+        return False  # If not horizontal or vertical, path is not straight
+
+
+def move(self, start_pos, end_pos, board):
         # Placeholder method, to be overridden by specific piece classes
         pass
 
