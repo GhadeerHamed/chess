@@ -1,8 +1,8 @@
-from PieceColor import PieceColor, White, Black, EmptyColor
+from PieceColor import White, Black, EmptyColor
 
 
 class Piece:
-    def __init__(self, color=PieceColor()):
+    def __init__(self, color=EmptyColor()):
         self.symbol = None
         self.color = color
 
@@ -62,7 +62,7 @@ class Piece:
 
 class EmptyPiece(Piece):
     def __init__(self):
-        super().__init__(EmptyColor())
+        super().__init__()
         self.symbol = ' '
 
 
