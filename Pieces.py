@@ -13,7 +13,38 @@ class Piece:
         # Placeholder method, to be overridden by specific piece classes
         return False
 
-    def check_path_clear(self, start_pos, end_pos, board):
+    @staticmethod
+    def check_path_clear_diagonal(start_pos, end_pos, board):
+        start_row, start_col = start_pos
+        end_row, end_col = end_pos
+
+        direction_row = 1 if end_row > start_row else -1
+        direction_col = 1 if end_col > start_col else -1
+
+        check_row, check_col = start_row + direction_row, start_col + direction_col
+
+        while check_row != end_row and check_col != end_col:
+            if not isinstance(board[check_row][check_col], EmptyPiece):
+                return False
+            check_row += direction_row
+            check_col += direction_col
+
+        return True
+
+    @staticmethod
+    def check_path_clear_straight(start_pos, end_pos, board):
+        start_row, start_col = start_pos
+        end_row, end_col = end_pos
+
+        if start_col == end_col:
+            direction_row = 1 if end_row > start_row else -1
+
+            check_row = start_row + direction_row
+            while check_row != end_row:
+                if not isinstance(board[check_row][start_col], EmptyPiece):
+                    return False
+                check_row += direction_row
+
         return True
 
     def move(self, start_pos, end_pos, board):
@@ -59,44 +90,6 @@ class Pawn(Piece):
         return False
 
 
-class Bishop(Piece):
-    def __init__(self, color):
-        super().__init__(color)
-        self.symbol = 'B'
-
-    def is_valid_move(self, start_pos, end_pos, board):
-        start_row, start_col = start_pos
-        end_row, end_col = end_pos
-
-        # Check if the move is diagonal
-        if abs(end_row - start_row) == abs(end_col - start_col):
-            # Check for obstructions along the diagonal path
-            direction_row = 1 if end_row > start_row else -1
-            direction_col = 1 if end_col > start_col else -1
-
-            check_row, check_col = start_row + direction_row, start_col + direction_col
-
-            while check_row != end_row and check_col != end_col:
-                if not isinstance(board[check_row][check_col], EmptyPiece):
-                    return False
-                check_row += direction_row
-                check_col += direction_col
-
-            # Check if the final position is empty or has an opponent's piece
-            if isinstance(board[end_row][end_col], EmptyPiece) or \
-                    board[end_row][end_col].color != self.color:
-                return True
-
-        return False
-
-    def move(self, start_pos, end_pos, board):
-        if self.is_valid_move(start_pos, end_pos, board):
-            board[end_pos[0]][end_pos[1]] = board[start_pos[0]][start_pos[1]]
-            board[start_pos[0]][start_pos[1]] = EmptyPiece()
-            return True
-        return False
-
-
 class Knight(Piece):
     def __init__(self, color):
         super().__init__(color)
@@ -120,6 +113,29 @@ class Knight(Piece):
         return False
 
 
+class Bishop(Piece):
+    def __init__(self, color):
+        super().__init__(color)
+        self.symbol = 'B'
+
+    def is_valid_move(self, start_pos, end_pos, board):
+        start_row, start_col = start_pos
+        end_row, end_col = end_pos
+
+        # Check if the move is diagonal
+        if abs(end_row - start_row) == abs(end_col - start_col):
+            return self.check_path_clear_diagonal(start_pos, end_pos, board)
+
+        return False
+
+    def move(self, start_pos, end_pos, board):
+        if self.is_valid_move(start_pos, end_pos, board):
+            board[end_pos[0]][end_pos[1]] = board[start_pos[0]][start_pos[1]]
+            board[start_pos[0]][start_pos[1]] = EmptyPiece()
+            return True
+        return False
+
+
 class Rook(Piece):
     def __init__(self, color):
         super().__init__(color)
@@ -130,26 +146,10 @@ class Rook(Piece):
         end_row, end_col = end_pos
 
         # Rook moves horizontally or vertically
-        return (start_row == end_row or start_col == end_col) \
-            and self.check_path_clear(start_pos, end_pos, board)
+        if start_row == end_row or start_col == end_col:
+            return self.check_path_clear_straight(start_pos, end_pos, board)
 
-    def check_path_clear(self, start_pos, end_pos, board):
-        start_row, start_col = start_pos
-        end_row, end_col = end_pos
-
-        # Check if the path is clear for the Rook to move
-        direction_row = 1 if end_row > start_row else (-1 if end_row < start_row else 0)
-        direction_col = 1 if end_col > start_col else (-1 if end_col < start_col else 0)
-
-        check_row, check_col = start_row + direction_row, start_col + direction_col
-
-        while check_row != end_row or check_col != end_col:
-            if not isinstance(board[check_row][check_col], EmptyPiece):
-                return False
-            check_row += direction_row
-            check_col += direction_col
-
-        return True
+        return False
 
     def move(self, start_pos, end_pos, board):
         if self.is_valid_move(start_pos, end_pos, board):
@@ -169,27 +169,13 @@ class Queen(Piece):
         end_row, end_col = end_pos
 
         # Queen moves like a Rook or Bishop - horizontally, vertically, or diagonally
-        return (start_row == end_row or start_col == end_col or
-                abs(end_row - start_row) == abs(end_col - start_col)) \
-            and self.check_path_clear(start_pos, end_pos, board)
+        if start_row == end_row or start_col == end_col:
+            return self.check_path_clear_straight(start_pos, end_pos, board)
 
-    def check_path_clear(self, start_pos, end_pos, board):
-        start_row, start_col = start_pos
-        end_row, end_col = end_pos
+        if abs(end_row - start_row) == abs(end_col - start_col):
+            return self.check_path_clear_diagonal(start_pos, end_pos, board)
 
-        # Check if the path is clear for the Queen to move
-        direction_row = 1 if end_row > start_row else (-1 if end_row < start_row else 0)
-        direction_col = 1 if end_col > start_col else (-1 if end_col < start_col else 0)
-
-        check_row, check_col = start_row + direction_row, start_col + direction_col
-
-        while check_row != end_row or check_col != end_col:
-            if not isinstance(board[check_row][check_col], EmptyPiece):
-                return False
-            check_row += direction_row
-            check_col += direction_col
-
-        return True
+        return False
 
     def move(self, start_pos, end_pos, board):
         if self.is_valid_move(start_pos, end_pos, board):
