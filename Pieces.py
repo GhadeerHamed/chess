@@ -69,7 +69,7 @@ class EmptyPiece(Piece):
 class Pawn(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'P'
+        self.symbol = '♙' if isinstance(color, White) else '♟'
 
     def is_valid_move(self, start_pos, end_pos, board):
         # Implement pawn's move validation logic
@@ -101,7 +101,7 @@ class Pawn(Piece):
 class Knight(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'N'
+        self.symbol = '♘' if isinstance(color, White) else '♞'
 
     def is_valid_move(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
@@ -124,7 +124,7 @@ class Knight(Piece):
 class Bishop(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'B'
+        self.symbol = '♗' if isinstance(color, White) else '♝'
 
     def is_valid_move(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
@@ -147,7 +147,7 @@ class Bishop(Piece):
 class Rook(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'R'
+        self.symbol = '♖' if isinstance(color, White) else '♜'
 
     def is_valid_move(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
@@ -170,7 +170,7 @@ class Rook(Piece):
 class Queen(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'Q'
+        self.symbol = '♕' if isinstance(color, White) else '♛'
 
     def is_valid_move(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
@@ -196,7 +196,7 @@ class Queen(Piece):
 class King(Piece):
     def __init__(self, color):
         super().__init__(color)
-        self.symbol = 'K'
+        self.symbol = '♔' if isinstance(color, White) else '♚'
 
     def is_valid_move(self, start_pos, end_pos, board):
         start_row, start_col = start_pos
